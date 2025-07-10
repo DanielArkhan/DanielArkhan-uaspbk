@@ -1,13 +1,13 @@
 <template>
   <div class="order-page">
     <h2>Top Up: {{ gameNameFormatted }}</h2>
+    <!-- Kirim game name ke TopUpForm -->
     <TopUpForm :game="gameNameFormatted" @success="$emit('success', $event)" />
   </div>
 </template>
 
 <script>
-import TopUpForm from '../components/TopUpForm.vue';
-import OrderList from '../components/OrderList.vue';
+import TopUpForm from '../components/TopUpForm.vue'
 
 export default {
   components: { TopUpForm },
@@ -20,11 +20,11 @@ export default {
         hsr: 'Honkai Star Rail',
         pubg: 'PUBG Mobile',
         ff: 'Free Fire'
-      };
-      return map[this.game] || 'Game';
+      }
+      return map[this.game] || 'Game'
     }
   }
-};
+}
 </script>
 
 <style scoped>

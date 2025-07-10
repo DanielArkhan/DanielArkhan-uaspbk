@@ -1,4 +1,3 @@
-<!-- src/views/OrderView.vue -->
 <template>
   <div class="order-view">
     <h1 class="title">Daftar Pesanan</h1>
@@ -14,6 +13,19 @@
         <p><strong>Metode Pembayaran:</strong> {{ order.paymentMethod }}</p>
         <p><strong>Status:</strong> {{ order.status }}</p>
         <p><strong>Tanggal:</strong> {{ formatDate(order.date) }}</p>
+
+        <!-- ✅ PROGRESS BAR -->
+        <div class="progress-wrapper">
+          <div class="progress-bar">
+            <div
+              class="progress-fill"
+              :style="{ width: order.status === 'completed' ? '100%' : '50%' }"
+            ></div>
+          </div>
+          <p class="progress-text">
+            {{ order.status === 'completed' ? '100%' : '50%' }} Selesai
+          </p>
+        </div>
       </div>
     </div>
 
@@ -87,5 +99,30 @@ function formatDate(dateString) {
 .order-card h3 {
   margin-top: 0;
   color: #333;
+}
+
+/* ✅ Tambahan STYLE untuk progress bar */
+.progress-wrapper {
+  margin-top: 12px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background-color: #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #22c55e;
+  transition: width 0.3s ease-in-out;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #555;
+  margin-top: 4px;
 }
 </style>

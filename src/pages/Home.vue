@@ -6,33 +6,26 @@
     <Carousel />
 
     <div class="game-list">
-      <GameCard
+      <router-link
         v-for="game in games"
         :key="game.name"
-        :game="game"
-        buttonText="Top Up"
-        @show-prices="openTopUpForm"
-      />
+        :to="`/order/${game.route}`"
+        class="game-link"
+      >
+        <GameCard :game="game" buttonText="Top Up" />
+      </router-link>
     </div>
-
-    <TopUpForm
-      v-if="selectedGame"
-      :game="selectedGame"
-      @close="selectedGame = null"
-    />
   </div>
 </template>
 
 <script>
 import GameCard from '../components/GameCard.vue'
-import TopUpForm from '../components/TopUpForm.vue'
 import Carousel from '../components/Carousel.vue'
 
 export default {
-  components: { GameCard, TopUpForm, Carousel },
+  components: { GameCard, Carousel },
   data() {
     return {
-      selectedGame: null,
       games: [
         {
           name: 'Genshin Impact',
@@ -60,11 +53,6 @@ export default {
           route: 'ff'
         }
       ]
-    }
-  },
-  methods: {
-    openTopUpForm(gameName) {
-      this.selectedGame = gameName
     }
   }
 }

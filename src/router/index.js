@@ -42,6 +42,22 @@ const routes = [
     component: OrderView,
     meta: { requiresAdmin: true }
   },
+
+  {
+  path: '/payment/:orderId',
+  name: 'Payment',
+  component: () => import('@/views/PaymentPage.vue'),
+  props: true
+  },
+
+  {
+  path: '/topup/:game',
+  name: 'TopUpForm',
+  component: () => import('@/components/TopUpForm.vue'),
+  props: true
+  },
+
+
   {
     path: '/:pathMatch(.*)*',
     redirect: '/'

@@ -40,18 +40,29 @@
     </div>
 
     <button type="submit">Bayar Sekarang</button>
+      <div v-if="progress > 0" class="progress-container">
+        <div class="progress-bar" :style="{ width: progress + '%' }">
+        </div>
+    </div>
   </form>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
+import { gameMap } from '../gameMap.js' // pastikan file ini ada
 
 const emit = defineEmits(['success'])
+const props = defineProps(['game'])
+const router = useRouter()
+const route = useRoute() // 👈 ini tambahan
 
 const username = ref('')
 const packageName = ref('')
 const paymentMethod = ref('')
+const isSubmitting = ref(false)
+const progress = ref(0)
 
 const packages = [
   { name: '60 Crystals', price: 10000 },
@@ -98,19 +109,43 @@ async function submitForm() {
 
   const selectedPackage = packages.find(p => p.name === packageName.value)
 
+  // ✅ Pastikan dapat slug game dari route
+  const gameSlug = route.params.game
+  console.log('Slug dari URL:', gameSlug) // debug
+
+  const gameNameMap = {
+    genshin: 'Genshin Impact',
+    ml: 'Mobile Legends',
+    hsr: 'Honkai Star Rail',
+    pubg: 'PUBG Mobile',
+    ff: 'Free Fire'
+  }
+
+  const gameName = gameNameMap[gameSlug?.toLowerCase()] || 'Unknown Game'
+  const gameId = gameMap[gameName] || '000000'
+
+  console.log('Nama game yang akan dikirim:', gameName)
+
   const orderData = {
     username: username.value,
     packageName: packageName.value,
     price: selectedPackage ? selectedPackage.price : null,
     paymentMethod: paymentMethod.value,
     status: 'pending',
-    date: new Date().toISOString()
+    date: new Date().toISOString(),
+    game: gameName,    // ✅ simpan nama game
+    gameId: gameId     // ✅ simpan ID game
   }
 
   try {
-    await axios.post('http://localhost:3000/orders', orderData)
-    alert('Pesanan berhasil dikirim!')
-    emit('success', orderData)
+    const res = await axios.post('http://localhost:3000/orders', orderData)
+    const newOrder = res.data
+    emit('success', newOrder)
+
+    // ✅ Redirect ke halaman pembayaran
+    window.location.href = `/payment/${newOrder.id}`
+
+    // Reset form
     username.value = ''
     packageName.value = ''
     paymentMethod.value = ''
@@ -189,4 +224,19 @@ button {
   color: #333;
   text-align: center;
 }
+
+.progress-container {
+  height: 12px;
+  width: 100%;
+  background-color: #eee;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4d3eff;
+  transition: width 0.4s ease;
+}
+
 </style>
